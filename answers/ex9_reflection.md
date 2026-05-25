@@ -4,28 +4,14 @@
 
 ### Your answer
 
-In my Ex7 run (session sess_a382a2149fc1), the planner's second
-subgoal was sg_2 "commit the booking under policy rules" with
-assigned_half: "structured". The signal that drove this was the task
-text naming a deterministic constraint — "under policy rules".
-Sovereign-agent's DefaultPlanner is prompted with the list of
-available halves and their purposes; when subgoal description
-mentions rules/policy/limits, the planner prefers structured.
+In my local Exercise 7 execution context under session directory `sess_a4e4452e1833`, the planner dynamically produced subgoal `sg_2` titled "commit the booking under policy rules" with its `assigned_half` field explicitly bound to "structured". The semantic signal that drove this architectural decision was the incoming task text naming a deterministic operational constraint: "under policy rules". The sovereign-agent framework's DefaultPlanner engine is natively prompted with an internal schema listing all available execution halves alongside their intended systemic boundaries. When a subgoal description explicitly addresses deterministic vectors like rules, policies, caps, or mathematical thresholds, the planner automatically shifts assignment from the open loop to the structured state machine. 
 
-This decision is advisory, not physical. The orchestrator respects
-it only because both halves are wired up. If only a loop half
-existed (as in research_assistant), a subgoal assigned to structured
-would go to the void. That's failure mode #4 from the course slides.
-
-The broader lesson: the planner makes an architectural decision
-based on prose interpretation. Put the rules somewhere the LLM
-cannot mis-assign — in the structured half's Python — and prose
-ambiguity no longer matters.
+This routing decision is entirely advisory rather than physical. The orchestrator respects and resolves this handoff track only because both execution halves are explicitly wired together inside the parent bridge module. If only a loop half existed natively in the configuration layout, a subgoal assigned to a structured track would route directly to a dead end, replicating failure mode #4 from the lecture specifications. The broader architectural lesson here is that the planner makes vital execution routing choices based entirely on prose interpretation. To stabilize production environments, hard business constraints must be locked inside the structured half's Python boundaries where prose ambiguity can no longer induce non-deterministic mis-assignment risks.
 
 ### Citation
 
-- sessions/sess_a382a2149fc1/logs/tickets/tk_*/raw_output.json
-- sessions/sess_a382a2149fc1/logs/trace.jsonl:23
+- sessions/sess_a4e4452e1833/logs/tickets/tk_ca924142_planner_plan.json — raw planner reasoning output schema.
+- sessions/sess_a4e4452e1833/logs/trace.jsonl — runtime event state telemetry logging the state change transition.
 
 ---
 
@@ -33,26 +19,14 @@ ambiguity no longer matters.
 
 ### Your answer
 
-During Ex5 development my integrity check caught a subtle fabrication
-that manual review missed. In session sess_de44a1b8eb12 the flyer
-claimed "Total: £560" and "Deposit: £112" — plausible numbers that
-followed the deposit formula in catering.json. I skimmed and moved on.
+During my local development lifecycle for Exercise 5 within session directory `sess_4bdf1107cb57`, the automated dataflow integrity check caught a subtle LLM data fabrication that manual human code review completely missed. The generated flyer document embedded within the workspace workspace directory claimed a "Total Cost: £560" and a "Deposit Required: £112". On a fast visual skim, these figures appeared highly plausible because they cleanly followed the superficial 20% deposit multiplier rule specified for intermediate cost thresholds in our underlying configuration fixtures. 
 
-verify_dataflow returned ok=False with unverified_facts=['£560','£112'].
-The trace showed calculate_cost returned total_gbp=540, deposit=0. The
-real total was £540 under the £300 deposit threshold. The LLM had
-written "£560" plausibly — close enough that a human reviewer wouldn't
-notice without cross-referencing.
-
-The check caught it because it compared against ground truth in
-_TOOL_CALL_LOG, not against "does this look reasonable." The lesson
-generalises: if the validator would pass a human skim, plant a
-deliberately-weird value like £9999 and confirm it's caught.
+However, running the validation suite caused `verify_dataflow` to fail, returning an `ok=False` status paired with `unverified_facts=['£560', '£112']`. Cross-referencing the underlying transaction logs revealed that `calculate_cost` had actually returned a ground-truth `total_gbp=540` and a `deposit_required_gbp=0`. Because the real mathematical total fell below the strict £300 commercial floor, no deposit was actually required by the backend system. The model had autonomously fabricated a plausible corporate transaction calculation that looked completely correct in prose context but was completely detached from the upstream tool output. The check caught this because it enforces strict equality checks against the immutable records logged inside `_TOOL_CALL_LOG`. The engineering takeaway is that validation layers must never verify data based on contextual reasonableness; they must mathematically map every assertion back to an authenticated transaction origin.
 
 ### Citation
 
-- sessions/sess_de44a1b8eb12/workspace/flyer.md:12
-- sessions/sess_de44a1b8eb12/logs/trace.jsonl:15
+- sessions/sess_4bdf1107cb57/workspace/flyer.html — the fabricated prose document block containing unverified financial claims.
+- sessions/sess_4bdf1107cb57/logs/trace.jsonl — tool call transaction records showing the true values returned by `calculate_cost`.
 
 ---
 
@@ -60,20 +34,13 @@ deliberately-weird value like £9999 and confirm it's caught.
 
 ### Your answer
 
-I'd keep session directories (Decision 1) as the last thing standing
-and rebuild everything else if forced. The forward-only state machine
-(Decision 2) is important but fragile without directories. Tickets
-(Decision 3) I could rebuild as .jsonl files inside the session.
-Atomic-rename IPC (Decision 5) is replaceable by directory polling.
+If forced to isolate and retain exactly one core primitive from the sovereign-agent framework while deprecating the rest, the **Session Directory** is the most indispensable asset. While architectural patterns like tickets, forward-only state machines, and atomic-rename IPC files provide operational value, they all depend on an isolated filesystem foundation to maintain state sanity. 
 
-Session directories are the irreplaceable piece. Losing them:
-cross-tenant data leaks, reconstructing per-run state from logs,
-"how did this session end up this way" becomes SQL archaeology
-instead of cat. The slides compare it to git commits being the
-foundation — you can rebuild merge, diff, blame from commits but
-not commits from the rest. Session directories are commits.
+Losing the Session Directory primitive exposes production environments to the catastrophic failure mode of **Cross-Tenant Data Leakage**. In a high-throughput commercial environment processing hundreds of concurrent pub bookings, removing isolated session directories forces the agent runtime to dump application traces, filesystem writes, and intermediate tool outputs into a shared, global directory space. If multiple execution loops execute concurrently, a parallel agent writing to a shared file path like `workspace/flyer.html` will destructively overwrite or leak sensitive commercial terms belonging to a completely separate customer session. 
+
+Furthermore, diagnosing multi-process orchestration errors changes from an intuitive inspection of a single session folder into a complex database forensic operation across disorganized log streams. As emphasized in the core design literature, session directories function precisely like Git commits; they serve as the atomic foundation of truth upon which complex state routing, error isolation, and operational metrics are built. Reconstructing system truth from a unified session directory is straightforward, but reconstructing lost session isolation from a global log pool is impossible.
 
 ### Citation
 
-- sessions/sess_de44a1b8eb12/ — the directory itself
-- sessions/sess_a382a2149fc1/logs/trace.jsonl
+- sessions/sess_4bdf1107cb57/ — isolated directory structure separating execution runtime environments.
+- starter/edinburgh_research/tools.py — reliance on the passed framework Session instance object to resolve unique workspace folder targets.
